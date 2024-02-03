@@ -2,7 +2,7 @@ package org.morgan.bookstore.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.morgan.bookstore.dto.section.SectionRequest;
+import org.morgan.bookstore.dto.SectionDTO;
 import org.morgan.bookstore.entity.Section;
 import org.morgan.bookstore.service.SectionService;
 import org.springframework.http.HttpStatus;
@@ -18,14 +18,14 @@ public class SectionController {
     private final SectionService sectionService;
     @PostMapping("/section")
     @ResponseStatus(HttpStatus.CREATED)
-    public String addSection(@RequestBody @Valid SectionRequest request) {
+    public String addSection(@RequestBody @Valid SectionDTO request) {
         return sectionService.addSection(request);
     }
 
     @PutMapping("/section/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public SectionRequest updateSection(@PathVariable(value = "name") String sectionName,
-                                            @RequestBody @Valid SectionRequest request) {
+    public SectionDTO updateSection(@PathVariable(value = "name") String sectionName,
+                                    @RequestBody @Valid SectionDTO request) {
         return sectionService.updateSection(sectionName,request);
     }
 

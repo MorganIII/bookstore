@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -14,16 +17,23 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Category {
 
     @Id
+    @Column(name = "category_name")
     private String name;
 
-    private String Description;
+    @Column(name = "category_description", length = 500)
+    private String description;
 
-    private Date creationDate;
+    @CreatedDate
+    @Column(name = "create_date", nullable = false, updatable = false)
+    private LocalDateTime creationDate;
 
-    private Date updatedDate;
+    @LastModifiedDate
+    @Column(name = "update_date", insertable = false)
+    private LocalDateTime updatedDate;
 
     @ManyToOne
     @JoinColumn(name = "section", nullable = false)
