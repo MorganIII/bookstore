@@ -1,11 +1,14 @@
 package org.morgan.bookstore.repository;
 
-import org.morgan.bookstore.entity.MainCategory;
+import org.morgan.bookstore.entity.Section;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
-public interface MainCategoryRepository extends JpaRepository<MainCategory,Integer> {
+public interface SectionRepository extends JpaRepository<Section,String> {
+
 
 
 }

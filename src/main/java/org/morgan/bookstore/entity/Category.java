@@ -14,22 +14,21 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MainCategory {
+public class Category {
 
     @Id
-    private Integer id;
-
-    @Column(unique = true, nullable = false)
     private String name;
 
-    private String description;
+    private String Description;
 
     private Date creationDate;
 
     private Date updatedDate;
 
-    @OneToMany(mappedBy = "mainCategory", cascade = {CascadeType.REMOVE})
-    private Set<SubCategory> subCategories;
+    @ManyToOne
+    @JoinColumn(name = "section", nullable = false)
+    private Section section;
 
-
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE})
+    private Set<Book> books;
 }

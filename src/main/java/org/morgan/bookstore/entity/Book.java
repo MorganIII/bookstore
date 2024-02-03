@@ -17,6 +17,7 @@ import java.util.Date;
 public class Book {
 
     @Id
+    @GeneratedValue
     private Integer id;
 
     @Column(unique = true, nullable = false)
@@ -48,11 +49,11 @@ public class Book {
     private Integer soldBooks;
 
     @ManyToOne
-    @JoinColumn(name = "sub_category", nullable = false)
-    private SubCategory subCategory;
+    @JoinColumn(name = "category", nullable = false)
+    private Category category;
 
     @ManyToOne
-    @JoinColumn(name = "main_category", nullable = false)
-    private MainCategory mainCategory;
+    @JoinColumn(name = "section", nullable = false)
+    private Section section;
 
 }
