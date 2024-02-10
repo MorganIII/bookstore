@@ -5,7 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.morgan.bookstore.entity.User;
+import org.morgan.bookstore.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class JwtService {
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
-                .setSubject(user.getUserName())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 1000 * 60 * 24))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

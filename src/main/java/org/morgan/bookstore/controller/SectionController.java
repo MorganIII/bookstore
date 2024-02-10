@@ -2,8 +2,8 @@ package org.morgan.bookstore.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.morgan.bookstore.dto.SectionDTO;
-import org.morgan.bookstore.entity.Section;
+import org.morgan.bookstore.request.SectionRequest;
+import org.morgan.bookstore.model.Section;
 import org.morgan.bookstore.service.SectionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,38 +11,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/section")
 @RequiredArgsConstructor
 public class SectionController {
 
     private final SectionService sectionService;
-    @PostMapping("/section")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public String addSection(@RequestBody @Valid SectionDTO request) {
+    public String addSection(@RequestBody @Valid SectionRequest request) {
         return sectionService.addSection(request);
     }
 
-    @PutMapping("/section/{name}")
+    @PutMapping("/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public SectionDTO updateSection(@PathVariable(value = "name") String sectionName,
-                                    @RequestBody @Valid SectionDTO request) {
+    public SectionRequest updateSection(@PathVariable(value = "name") String sectionName,
+                                        @RequestBody @Valid SectionRequest request) {
         return sectionService.updateSection(sectionName,request);
     }
 
-    @DeleteMapping("/section/{name}")
+    @DeleteMapping("/{name}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSection(@PathVariable("name") String sectionName) {
         sectionService.deleteSection(sectionName);
     }
 
-    @GetMapping("/section/{name}")
+    @GetMapping("/{name}")
     public Section getSection(@PathVariable("name") String name) {
         return sectionService.getSection(name);
     }
 
-    @GetMapping("/section")
-    public List<Section> getAllSections() {
+    @GetMapping("/all")
+    public List<String> getAllSections() {
         return sectionService.getAllSections();
     }
+
+
 
  }

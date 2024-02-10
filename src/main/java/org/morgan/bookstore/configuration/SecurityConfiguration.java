@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -26,7 +26,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize-> authorize
                         .requestMatchers(
-                                "/api/**",
+                                "/**",
                                 "/v2/api-docs",
                                 "/v3/api-docs",
                                 "v3/api-docs/**",

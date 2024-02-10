@@ -5,9 +5,9 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.morgan.bookstore.dto.CategoryDTO;
-import org.morgan.bookstore.entity.Category;
-import org.morgan.bookstore.entity.Section;
+import org.morgan.bookstore.request.CategoryRequest;
+import org.morgan.bookstore.model.Category;
+import org.morgan.bookstore.model.Section;
 import org.morgan.bookstore.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +22,7 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final SectionService sectionService;
 
-    public String addCategory(CategoryDTO request) {
+    public String addCategory(CategoryRequest request) {
         String categoryName = request.getCategoryName();
         String sectionName = request.getSectionName();
         String description = request.getDescription();
@@ -38,7 +38,7 @@ public class CategoryService {
         return categoryName;
     }
 
-    public CategoryDTO updateCategory(String categoryName, CategoryDTO request) {
+    public CategoryRequest updateCategory(String categoryName, CategoryRequest request) {
         Category category = getCategory(categoryName);
         Section section = sectionService.getSection(request.getSectionName());
         if(!categoryName.equals(request.getCategoryName())) {
@@ -64,9 +64,20 @@ public class CategoryService {
         return categoryOptional.orElseThrow(()->new EntityNotFoundException(String.format("The category with name %s is not found", categoryName)));
     }
 
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public Category getCategoryByNameAndSectionName(String categoryName, String sectionName) {
+        return categoryRepository.findCategoryByNameAndSectionName(categoryName,sectionName)
+                .orElseThrow(()-> new EntityNotFoundException(String.format("there is no category with name %s in the section with name %s",categoryName,sectionName)));
     }
+
+    public List<String> getAllCategories() {
+        return categoryRepository.getAllCategoryNames();
+    }
+
+
+    public List<String> getCategoriesBySection(String sectionName) {
+        return categoryRepository.findCategoryNamesBySectionName(sectionName);
+    }
+
 
     private void validateCategoryDuplicate(String categoryName) {
         Optional<Category> optionalCategory = categoryRepository.findById(categoryName);

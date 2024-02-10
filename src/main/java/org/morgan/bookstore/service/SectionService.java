@@ -4,8 +4,8 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.morgan.bookstore.dto.SectionDTO;
-import org.morgan.bookstore.entity.Section;
+import org.morgan.bookstore.request.SectionRequest;
+import org.morgan.bookstore.model.Section;
 import org.morgan.bookstore.repository.SectionRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class SectionService {
 
     private final SectionRepository sectionRepository;
 
-    public String addSection(SectionDTO request) {
+    public String addSection(SectionRequest request) {
         String sectionName = request.getName();
         String sectionDesc = request.getDescription();
         validateSectionDuplicate(sectionName);
@@ -33,7 +33,7 @@ public class SectionService {
     }
 
 
-    public SectionDTO updateSection(String sectionName, SectionDTO request) {
+    public SectionRequest updateSection(String sectionName, SectionRequest request) {
         Section section = getSection(sectionName);
         if (!sectionName.equals(request.getName())) {
             validateSectionDuplicate(request.getName());
@@ -63,7 +63,9 @@ public class SectionService {
         }
     }
 
-    public List<Section> getAllSections() {
-        return sectionRepository.findAll();
+    public List<String> getAllSections() {
+        return sectionRepository.getAllSectionsNames();
     }
+
+
 }

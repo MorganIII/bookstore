@@ -1,20 +1,26 @@
-package org.morgan.bookstore.dto;
-
+package org.morgan.bookstore.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SectionDTO {
+public class CategoryRequest {
+
+    @NotNull(message = "Category name should not be null")
+    @NotBlank(message = "Category name should not be blank")
+    private String categoryName;
 
     @NotNull(message = "Section name should not be null")
     @NotBlank(message = "Section name should not be blank")
-    private String name;
+    private String sectionName;
 
     @Size(message = "Description should not exceed 500 characters", max = 500)
     private String description;
+
 }

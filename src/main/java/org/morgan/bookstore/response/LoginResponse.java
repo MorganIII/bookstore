@@ -1,4 +1,4 @@
-package org.morgan.bookstore.dto;
+package org.morgan.bookstore.response;
 
 public record LoginResponse(String token) {
 }

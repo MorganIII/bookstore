@@ -1,4 +1,4 @@
-package org.morgan.bookstore.entity;
+package org.morgan.bookstore.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -18,16 +17,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "sections")
 @EntityListeners(AuditingEntityListener.class)
-public class Section {
-
+public class Category {
 
     @Id
-    @Column(name = "section_name")
+    @Column(name = "category_name")
     private String name;
 
-    @Column(name = "section_description", length = 500)
+    @Column(name = "category_description", length = 500)
     private String description;
 
     @CreatedDate
@@ -38,8 +35,10 @@ public class Section {
     @Column(name = "update_date", insertable = false)
     private LocalDateTime updatedDate;
 
-    @OneToMany(mappedBy = "section", cascade = {CascadeType.REMOVE})
-    private Set<Category> categories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_section", nullable = false)
+    private Section section;
 
-
+    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE},fetch = FetchType.LAZY)
+    private Set<Book> books;
 }

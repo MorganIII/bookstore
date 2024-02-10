@@ -1,4 +1,4 @@
-package org.morgan.bookstore.entity;
+package org.morgan.bookstore.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

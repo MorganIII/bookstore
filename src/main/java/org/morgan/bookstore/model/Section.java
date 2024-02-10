@@ -1,4 +1,4 @@
-package org.morgan.bookstore.entity;
+package org.morgan.bookstore.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,14 +17,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "sections")
 @EntityListeners(AuditingEntityListener.class)
-public class Category {
-
+public class Section {
     @Id
-    @Column(name = "category_name")
+    @Column(name = "section_name")
     private String name;
 
-    @Column(name = "category_description", length = 500)
+    @Column(name = "section_description", length = 500)
     private String description;
 
     @CreatedDate
@@ -35,10 +35,6 @@ public class Category {
     @Column(name = "update_date", insertable = false)
     private LocalDateTime updatedDate;
 
-    @ManyToOne
-    @JoinColumn(name = "section", nullable = false)
-    private Section section;
-
-    @OneToMany(mappedBy = "category", cascade = {CascadeType.REMOVE})
-    private Set<Book> books;
+    @OneToMany(mappedBy = "section", cascade = {CascadeType.REMOVE})
+    private Set<Category> categories;
 }
