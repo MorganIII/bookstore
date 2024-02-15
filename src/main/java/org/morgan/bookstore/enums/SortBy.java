@@ -11,7 +11,7 @@ public enum SortBy {
     public static SortBy convert(String source) {
         Converter<String,SortBy> converter = (s)->{
             try {
-                return SortBy.valueOf(source);
+                return SortBy.valueOf(source.toUpperCase());
             } catch(Exception e) {
                 return null;
             }

@@ -18,7 +18,7 @@ public interface BookRepository extends JpaRepository<Book,Integer> {
 
     @Query(value = """
            select new org.morgan.bookstore.response.BookResponse(b.id,b.title,b.actualPrice,b.discountPrice,b.bookThumbnail,
-           b.description, b.numberOfPages,b.bookCover, b.copiesInStock,b.soldCopies,b.creationDate,b.updatedDate,
+           b.description, b.numberOfPages,b.bookCover, b.copiesInStock,b.soldCopies,b.creationTime,b.lastUpdatedTime,
            b.category.name,b.section.name) from Book b
            where b.id=:id
            """)

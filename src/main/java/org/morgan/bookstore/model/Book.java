@@ -5,21 +5,16 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Builder
 @Entity
 @AllArgsConstructor
 @Getter
 @Setter
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
-public class Book {
+public class Book extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -61,15 +56,6 @@ public class Book {
 
     @Column(name = "book_thumbnail",nullable = false, length = 300)
     private String bookThumbnail;
-
-    @CreatedDate
-    @Column(name = "create_date", nullable = false, updatable = false)
-    private LocalDateTime creationDate;
-
-    @LastModifiedDate
-    @Column(name = "update_date", insertable = false)
-    private LocalDateTime updatedDate;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_category", nullable = false)

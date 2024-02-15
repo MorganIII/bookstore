@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.morgan.bookstore.exception.CouponException;
 import org.morgan.bookstore.exception.ImageNotValidException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -92,6 +93,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ImageNotValidException.class)
     public ResponseEntity<?> handleInvalidImageExtensionException(ImageNotValidException exp, HttpServletRequest request ) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .dateTime(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .path(request.getServletPath())
+                .message(exp.getMessage())
+                .build();
+        log.error(exp.getMessage(), exp);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+    @ExceptionHandler(CouponException.class)
+    public ResponseEntity<?> handleCouponException(CouponException exp, HttpServletRequest request ) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
