@@ -41,9 +41,9 @@ public enum Government {
 
     private final String governmentName;
     private final String region;
-    private final int shippingPrice;
+    private final double shippingPrice;
 
-    Government(String governmentName, String region, int shippingPrice) {
+    Government(String governmentName, String region, double shippingPrice) {
         this.governmentName = governmentName;
         this.region = region;
         this.shippingPrice = shippingPrice;
