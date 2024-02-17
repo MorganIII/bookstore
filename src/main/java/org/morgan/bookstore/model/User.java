@@ -38,11 +38,14 @@ public class User extends BaseEntity{
     @Column(name = "contact_number")
     private String phoneNumber;
 
-    @Column(name = "is_enabled")
+    @Column(name = "is_enabled", nullable = false)
     private Boolean isEnabled;
 
     @Column(name = "token")
     private String token;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Address> addresses;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE",
