@@ -1,12 +1,13 @@
 package org.morgan.bookstore.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.util.Set;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = true, exclude = {"cart"})
 @Data
 @AllArgsConstructor
 @Builder
@@ -45,7 +46,11 @@ public class User extends BaseEntity{
     private String token;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<Address> addresses;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    private Cart cart;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "USER_ROLE",
@@ -56,5 +61,5 @@ public class User extends BaseEntity{
                     @JoinColumn(name = "ROLE_ID")
             }
     )
-    private Set<Role> role;
+    private Set<Authorities> authorities;
 }

@@ -30,6 +30,7 @@ public class UserService implements UserDetailsService {
                 orElseThrow(()-> new UsernameNotFoundException(String.format("user with email: %s not found",id)));
     }
 
+
     public Integer userId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Principal principal = (Principal) authentication.getPrincipal();

@@ -2,11 +2,16 @@ package org.morgan.bookstore.service;
 
 
 import lombok.RequiredArgsConstructor;
+import org.morgan.bookstore.enums.CartStatus;
+import org.morgan.bookstore.enums.Role;
 import org.morgan.bookstore.exception.UserException;
+import org.morgan.bookstore.model.Cart;
+import org.morgan.bookstore.repository.AuthoritiesRepository;
+import org.morgan.bookstore.repository.CartRepository;
 import org.morgan.bookstore.request.LoginRequest;
 import org.morgan.bookstore.response.LoginResponse;
 import org.morgan.bookstore.request.RegisterRequest;
-import org.morgan.bookstore.model.Role;
+import org.morgan.bookstore.model.Authorities;
 import org.morgan.bookstore.model.User;
 import org.morgan.bookstore.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,6 +31,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final AuthoritiesRepository authoritiesRepository;
+    private final CartRepository cartRepository;
     public String register(RegisterRequest request) {
         if(isUserExist(request.getEmail())) {
             return "You are already registered";
@@ -37,12 +44,13 @@ public class AuthService {
                 .displayName(request.getFirstName() +" "+ request.getLastName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .isEnabled(false)
+                .isEnabled(true)
                 .token(token)
-                .role(Set.of(new Role("USER","")))
+                .authorities(Set.of(authoritiesRepository.findAuthoritiesByRole(Role.USER)))
                 .build();
         emailService.sendEmail(request.getFirstName(), request.getEmail(),token);
-        repository.save(user);
+        user = repository.save(user);
+        cartRepository.save(CartService.createCart(null, user));
         return "registered successfully";
     }
 
