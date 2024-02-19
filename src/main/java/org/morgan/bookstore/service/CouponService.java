@@ -1,5 +1,7 @@
 package org.morgan.bookstore.service;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.morgan.bookstore.exception.CouponException;
@@ -48,7 +50,7 @@ public class CouponService {
     public Coupon getCouponById(Integer id) {
 
         return couponRepository.findById(id).
-                orElseThrow(()-> new CouponException(String.format("coupon with id %s not found", id)));
+                orElseThrow(()-> new EntityNotFoundException(String.format("coupon with id %s not found", id)));
     }
 
     public List<CouponResponse> getAllCoupons(Boolean active) {
@@ -58,7 +60,31 @@ public class CouponService {
     public void validateCouponDuplicate(String code) {
         Optional<Coupon> coupon = couponRepository.findCouponByCode(code);
         if(coupon.isPresent()) {
-            throw new CouponException(String.format("coupon with code %s is already found",code));
+            throw new EntityExistsException(String.format("coupon with code %s is already found",code));
         }
     }
+
+    public Double calculateDiscount(Coupon coupon, Double subTotal, Double shippingPrice) {
+        return switch (coupon.getType()) {
+            case FREE_SHIPPING -> subTotal;
+            case PERCENTAGE -> subTotal - (subTotal * coupon.getDiscount() / 100)+shippingPrice;
+            case FIXED_AMOUNT -> subTotal - coupon.getDiscount()+shippingPrice;
+        };
+    }
+
+    public void validateCoupon(Coupon coupon, Double subTotal) {
+        if(!coupon.isCouponValid()) {
+            throw new CouponException(String.format("coupon with code %s is expired",coupon.getCode()));
+        } else if(coupon.getMinimumAmount() > subTotal) {
+            throw new CouponException(String.format("coupon with code %s is not valid for this amount",coupon.getCode()));
+        }
+    }
+
+
+    public Coupon getCouponByCode(String code) {
+        return couponRepository.findCouponByCode(code)
+                .orElseThrow(()-> new EntityNotFoundException(String.format("coupon with code %s not found", code)));
+    }
+
+
 }

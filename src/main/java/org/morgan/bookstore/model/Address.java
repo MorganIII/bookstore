@@ -1,6 +1,6 @@
 package org.morgan.bookstore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,8 +29,6 @@ public class Address extends BaseEntity{
     @NotBlank(message = "Mobile number is required")
     private String mobileNumber;
 
-
-
     @NotNull(message = "Government is required")
     @Enumerated(EnumType.STRING)
     private Government government;
@@ -46,7 +44,7 @@ public class Address extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
+    @JsonBackReference
     private User user;
 
     @Override
@@ -61,4 +59,9 @@ public class Address extends BaseEntity{
     public int hashCode() {
         return Objects.hash(getFullName(), getMobileNumber(), getGovernment(), getCity(), getFullAddress());
     }
+
+    public double getShippingPrice() {
+        return this.government.getShippingPrice();
+    }
+
 }

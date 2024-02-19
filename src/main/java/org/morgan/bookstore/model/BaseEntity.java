@@ -26,7 +26,8 @@ public class BaseEntity {
     @Column(name = "creation_time",nullable = false,updatable = false)
     @CreationTimestamp
     private LocalDateTime creationTime;
-    @Column(name = "last_updated_time",nullable = false,updatable = false)
+
+    @Column(name = "last_updated_time", insertable = false)
     @UpdateTimestamp
     private LocalDateTime lastUpdatedTime;
 

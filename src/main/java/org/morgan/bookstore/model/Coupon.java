@@ -54,4 +54,7 @@ public class Coupon{
     }
 
 
+    public boolean isCouponValid() {
+        return this.getActive() && !this.isExpired();
+    }
 }

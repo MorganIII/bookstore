@@ -3,12 +3,14 @@ package org.morgan.bookstore.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.morgan.bookstore.enums.Government;
 import org.morgan.bookstore.model.Address;
 import org.morgan.bookstore.request.AddressRequest;
 import org.morgan.bookstore.service.AddressService;
 import org.morgan.bookstore.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RequiredArgsConstructor
@@ -57,5 +59,10 @@ public class AddressController {
     @PatchMapping("/{id}/default")
     public Address setAddressAsDefault(@PathVariable(name = "id") Integer addressId) {
         return addressService.setAddressAsDefault(addressId);
+    }
+
+    @GetMapping("/governments")
+    public List<String> getGovernments() {
+        return Government.getGovernments();
     }
 }

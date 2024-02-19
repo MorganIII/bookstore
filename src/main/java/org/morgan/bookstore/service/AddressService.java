@@ -2,6 +2,7 @@ package org.morgan.bookstore.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.morgan.bookstore.model.Address;
@@ -20,6 +21,9 @@ public class AddressService {
     private final UserService userService;
     private final ModelMapper modelMapper;
 
+
+
+    @Transactional
     public void addAddress(AddressRequest request) {
         Integer userId = userService.userId();
         User user = userService.getUserById(userId);
@@ -83,6 +87,6 @@ public class AddressService {
     public Address getDefaultAddress() {
         Integer userId = userService.userId();
         return addressRepository.findAddressByUserIdAndIsDefault(userId, true)
-                .orElseThrow(()-> new EntityNotFoundException("Default address is not found"));
+                .orElse(null);
     }
 }

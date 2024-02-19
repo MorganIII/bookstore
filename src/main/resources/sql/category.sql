@@ -1,4 +1,4 @@
-INSERT INTO category(category_name, category_description, category_section, create_date) VALUES
+INSERT INTO category(category_name, category_description, category_section, creation_time) VALUES
 ('Clean Code', 'Master the art of writing clean, maintainable code. Learn techniques and principles to enhance code readability, simplicity, and efficiency, fostering a culture of quality programming.', 'Software Engineering', NOW()),
 ('Object-Oriented Programming', 'Delve into the world of objects, classes, and inheritance. Explore the principles of encapsulation, polymorphism, and abstraction to design robust and scalable software systems.', 'Software Engineering', NOW()),
 ('Design Patterns', 'Unlock the secrets of reusable, elegant solutions to common design problems. From singleton to observer patterns, discover best practices that enhance software design and architecture.', 'Software Engineering', NOW()),

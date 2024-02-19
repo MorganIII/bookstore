@@ -1,4 +1,4 @@
-INSERT INTO sections(section_name,section_description,create_date) VALUES
+INSERT INTO sections(section_name,section_description,creation_time) VALUES
 ('Software Engineering','Dive into the world of coding, algorithms, and software development. Find comprehensive guides, language-specific tutorials, and cutting-edge practices to enhance your programming skills.', NOW()),
 ('Technology','Explore the latest tech trends and innovations. From futuristic gadgets to breakthrough technologies, our collection covers a broad spectrum, keeping you at the forefront of the rapidly evolving tech landscape.',NOW()),
 ('AI & Data Science','Uncover the power of artificial intelligence and data science. Delve into machine learning, data analysis, and explore how these fields are reshaping industries. Whether you''re a beginner or an expert, find resources to fuel your curiosity.',NOW()),
