@@ -41,6 +41,12 @@ spring:
       host: ${VERIFY_EMAIL_HOST}
 
 
+# stripe api
+
+stripe:
+  public-key: ${STRIPE_PUBLIC_KEY}
+  secret-key: ${STRIPE_SECRET_KEY}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET}
 
 logging:
   level:
