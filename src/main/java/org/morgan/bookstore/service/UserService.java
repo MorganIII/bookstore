@@ -1,6 +1,7 @@
 package org.morgan.bookstore.service;
 
 import lombok.RequiredArgsConstructor;
+import org.morgan.bookstore.enums.Role;
 import org.morgan.bookstore.model.Principal;
 import org.morgan.bookstore.model.User;
 import org.morgan.bookstore.repository.UserRepository;
@@ -34,6 +35,16 @@ public class UserService implements UserDetailsService {
     public Integer userId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Principal principal = (Principal) authentication.getPrincipal();
+        return principal.getId();
+    }
+
+    public Integer getCurrent() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Principal principal = (Principal) authentication.getPrincipal();
+        boolean isAdmin = principal.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_" +Role.ADMIN));
+        if(isAdmin){
+            return null;
+        }
         return principal.getId();
     }
 }
