@@ -64,4 +64,5 @@ public class Book extends BaseEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_section", nullable = false)
     private Section section;
+
 }
