@@ -2,24 +2,29 @@ package org.morgan.bookstore.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.morgan.bookstore.enums.CartStatus;
+import org.morgan.bookstore.enums.ChangeType;
 import org.morgan.bookstore.enums.Government;
 import org.morgan.bookstore.exception.CouponException;
 import org.morgan.bookstore.model.*;
+import org.morgan.bookstore.order.OrderHandler;
 import org.morgan.bookstore.repository.CartItemRepository;
 import org.morgan.bookstore.repository.CartRepository;
 import org.morgan.bookstore.request.CartRequest;
+import org.morgan.bookstore.request.OrderRequest;
 import org.morgan.bookstore.response.CartPriceResponse;
 import org.morgan.bookstore.response.CartResponse;
 import org.morgan.bookstore.response.ItemDTO;
+import org.morgan.bookstore.response.OrderResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class CartService {
+public class CartService extends OrderHandler {
 
     private final CartRepository cartRepository;
     private final UserService userService;
@@ -32,6 +37,7 @@ public class CartService {
     public CartResponse addItem(CartRequest request) {
         Cart cart = getCartByUserId(userService.userId());
         Book book = bookService.getBookById(request.getBookId());
+        bookService.validateBookAvailability(request.getBookId(), request.getQuantity(), book.getTitle());
         if(cartItemRepository.existsByCartAndBook(cart, book)) {
             cartItemRepository.updateCartItemQuantity(cart, book, request.getQuantity());
         } else {
@@ -127,10 +133,7 @@ public class CartService {
     }
 
     public CartResponse buildCartResponse(Cart cart) {
-        List<ItemDTO> items = cartItemRepository.getCartItems(cart);
-        /* get the cart subtotal*/
-
-        items = items.stream().peek(item -> item.setSubTotal(item.getQuantity() * item.getActualPrice())).toList();
+        List<ItemDTO> items = getItemDTOS(cart);
 
         Double cartSubTotal = items
                 .stream()
@@ -170,6 +173,13 @@ public class CartService {
                 .build();
     }
 
+    @NotNull
+    private List<ItemDTO> getItemDTOS(Cart cart) {
+        List<ItemDTO> items = cartItemRepository.getCartItems(cart);
+        items = items.stream().peek(item -> item.setSubTotal(item.getQuantity() * item.getActualPrice())).toList();
+        return items;
+    }
+
 
     public Double getShippingPrice(Cart cart) {
         if(cart.getShippingPrice() == 0) {
@@ -203,10 +213,45 @@ public class CartService {
         return cart;
     }
 
-    // get cart by user id
-
 public Cart getCartByUserId(Integer userId) {
         return cartRepository.getCartByUser(userId).orElseThrow(() -> new EntityNotFoundException("Cart not found"));
+    }
+
+
+    @Override
+    @Transactional
+    public OrderResponse handleOrder(OrderRequest request, OrderResponse response, Order order) {
+        User user = order.getUser();
+        Cart cart = getCartByUserId(user.getId());
+        validateCartNotEmpty(cart);
+        List<ItemDTO> items = getItemDTOS(cart);
+        bookService.validateBooksAvailability(items);
+        bookService.updateBookCopiesInStock(items, ChangeType.DECREASE);
+        bookService.updateSoldCopies(items, ChangeType.INCREASE);
+        for(ItemDTO item: items) {
+            order.getOrderItems().add(OrderItem.builder()
+                    .book(bookService.getBookById(item.getBookId()))
+                    .quantity(item.getQuantity())
+                    .price(item.getActualPrice())
+                    .totalPrice(item.getSubTotal())
+                    .order(order)
+                    .build());
+        }
+        Double orderTotal = items
+                .stream()
+                .mapToDouble(ItemDTO::getSubTotal)
+                .sum();
+        response.setItems(items);
+        response.setTotalItems(items.size());
+        response.setSubTotal(orderTotal);
+        order.setTotalPrice(orderTotal);
+        order.setTotalItems(items.size());
+        Coupon coupon = cart.getCoupon();
+        if(coupon != null) {
+            order.setCoupon(coupon);
+        }
+        //cart.clearCart();
+        return process(request, response, order);
     }
 
 

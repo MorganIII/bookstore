@@ -5,6 +5,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
+import org.morgan.bookstore.enums.ChangeType;
 import org.morgan.bookstore.response.BookDetailsResponse;
 import org.morgan.bookstore.response.BookListingResponse;
 import org.morgan.bookstore.request.BookRequest;
@@ -16,12 +17,14 @@ import org.morgan.bookstore.enums.ImageType;
 import org.morgan.bookstore.enums.SortBy;
 import org.morgan.bookstore.exception.ImageNotValidException;
 import org.morgan.bookstore.repository.BookRepository;
+import org.morgan.bookstore.response.ItemDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -156,8 +159,45 @@ public class BookService {
                 .build();
     }
 
-    public Page<BookListingResponse> getBooksByTitle(String title, @PositiveOrZero Integer pageNumber, @Positive() Integer pageSize) {
+    public Page<BookListingResponse> getBooksByTitle(String title,Integer pageNumber, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
         return bookRepository.findBooksByTitle(title, pageable);
+    }
+
+    public void validateBookAvailability(Integer bookId, Integer quantity, String bookTitle) {
+        Integer copiesInStock = bookRepository.getCopiesInStockById(bookId);
+        if(copiesInStock == null || copiesInStock <= 0) {
+            throw new IllegalArgumentException(String.format("The book with title '%s' is not in stock",bookTitle));
+        } else if (copiesInStock < quantity) {
+            throw new IllegalArgumentException(String.format("The book with title '%s' does not have enough copies in stock", bookTitle));
+
+        }
+    }
+
+    public void validateBooksAvailability(List<ItemDTO> items) {
+        for (ItemDTO item : items) {
+            validateBookAvailability(item.getBookId(), item.getQuantity(), item.getTitle());
+        }
+    }
+    public void updateBookCopiesInStock(Integer bookId, Integer quantity) {
+        bookRepository.updateBookCopiesInStock(bookId, quantity);
+    }
+
+    public void updateBookCopiesInStock(List<ItemDTO> items, ChangeType changeType) {
+        int sign = changeType == ChangeType.INCREASE ? 1 : -1;
+        for(ItemDTO item : items) {
+            updateBookCopiesInStock(item.getBookId(), sign*item.getQuantity());
+        }
+    }
+
+    public void updateSoldCopies(Integer bookId, Integer quantity) {
+        bookRepository.updateSoldCopies(bookId, quantity);
+    }
+
+    public void updateSoldCopies(List<ItemDTO> items, ChangeType changeType) {
+        int sign = changeType == ChangeType.INCREASE ? 1 : -1;
+        for(ItemDTO item : items) {
+            updateSoldCopies(item.getBookId(), sign*item.getQuantity());
+        }
     }
 }

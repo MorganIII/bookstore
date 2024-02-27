@@ -6,9 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.morgan.bookstore.exception.CouponException;
 import org.morgan.bookstore.model.Coupon;
+import org.morgan.bookstore.model.Order;
+import org.morgan.bookstore.order.OrderHandler;
 import org.morgan.bookstore.repository.CouponRepository;
 import org.morgan.bookstore.request.CouponRequest;
+import org.morgan.bookstore.request.OrderRequest;
 import org.morgan.bookstore.response.CouponResponse;
+import org.morgan.bookstore.response.OrderResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,7 +20,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CouponService {
+public class CouponService extends OrderHandler {
 
     private final CouponRepository couponRepository;
 
@@ -87,4 +91,21 @@ public class CouponService {
     }
 
 
+    @Override
+    public OrderResponse handleOrder(OrderRequest request, OrderResponse response, Order order) {
+        Coupon coupon = order.getCoupon();
+        if(coupon != null) {
+            validateCoupon(coupon, order.getTotalPrice());
+            Double totalAfterDiscount = calculateDiscount(coupon, order.getTotalPrice(), order.getShippingPrice());
+            Double discount = order.getTotalPrice() - totalAfterDiscount;
+            order.setDiscount(discount);
+            response.setCoupon(CouponResponse.builder().code(coupon.getCode()).
+                    discount(discount)
+                    .build());
+        }else {
+            order.setDiscount(0.0);
+        }
+
+        return process(request, response, order);
+    }
 }

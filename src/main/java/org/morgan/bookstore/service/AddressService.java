@@ -6,16 +6,20 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.morgan.bookstore.model.Address;
+import org.morgan.bookstore.model.Order;
 import org.morgan.bookstore.model.User;
+import org.morgan.bookstore.order.OrderHandler;
 import org.morgan.bookstore.repository.AddressRepository;
 import org.morgan.bookstore.request.AddressRequest;
+import org.morgan.bookstore.request.OrderRequest;
+import org.morgan.bookstore.response.OrderResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class AddressService {
+public class AddressService extends OrderHandler {
 
     private final AddressRepository addressRepository;
     private final UserService userService;
@@ -88,5 +92,23 @@ public class AddressService {
         Integer userId = userService.userId();
         return addressRepository.findAddressByUserIdAndIsDefault(userId, true)
                 .orElse(null);
+    }
+
+    @Override
+    public OrderResponse handleOrder(OrderRequest request, OrderResponse response, Order order) {
+        User user = order.getUser();
+        Address shippingAddress = modelMapper.map(request.getShippingAddress(), Address.class);
+
+        if(user.getAddresses().contains(shippingAddress)) {
+            Address finalShippingAddress = shippingAddress;
+            shippingAddress = user.getAddresses().stream().filter(address -> address.equals(finalShippingAddress)).findFirst().get();
+        } else {
+            shippingAddress.setUser(user);
+            shippingAddress.setIsDefault(false);
+            shippingAddress = addressRepository.save(shippingAddress);
+        }
+        response.setShippingAddress(request.getShippingAddress());
+        order.setShippingAddress(shippingAddress);
+        return process(request, response, order);
     }
 }
