@@ -5,6 +5,7 @@ import org.morgan.bookstore.enums.Role;
 import org.morgan.bookstore.model.Principal;
 import org.morgan.bookstore.model.User;
 import org.morgan.bookstore.repository.UserRepository;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,5 +47,10 @@ public class UserService implements UserDetailsService {
             return null;
         }
         return principal.getId();
+    }
+
+    public boolean isAnonymousUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication instanceof AnonymousAuthenticationToken;
     }
 }
