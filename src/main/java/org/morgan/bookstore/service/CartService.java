@@ -12,7 +12,7 @@ import org.morgan.bookstore.model.*;
 import org.morgan.bookstore.order.OrderHandler;
 import org.morgan.bookstore.repository.CartItemRepository;
 import org.morgan.bookstore.repository.CartRepository;
-import org.morgan.bookstore.request.CartRequest;
+import org.morgan.bookstore.request.AddItemRequest;
 import org.morgan.bookstore.request.OrderRequest;
 import org.morgan.bookstore.response.CartPriceResponse;
 import org.morgan.bookstore.response.CartResponse;
@@ -34,7 +34,7 @@ public class CartService extends OrderHandler {
     private final CartItemRepository cartItemRepository;
 
     @Transactional
-    public CartResponse addItem(CartRequest request) {
+    public CartResponse addItem(AddItemRequest request) {
         Cart cart = getCartByUserId(userService.userId());
         Book book = bookService.getBookById(request.getBookId());
         bookService.validateBookAvailability(request.getBookId(), request.getQuantity(), book.getTitle());

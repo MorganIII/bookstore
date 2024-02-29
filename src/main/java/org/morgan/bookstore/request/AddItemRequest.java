@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class CartRequest {
+public class AddItemRequest {
 
     @NotNull
     @Positive(message = "book id should be positive value")

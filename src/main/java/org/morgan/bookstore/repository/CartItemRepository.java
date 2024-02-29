@@ -22,7 +22,7 @@ public interface CartItemRepository extends JpaRepository<CartItem,Integer> {
 
     @Query(value = """
         select new org.morgan.bookstore.response.ItemDTO
-        (ci.id, b.id, b.title, b.actualPrice, ci.quantity, b.actualPrice ,b.bookThumbnail)
+        (ci.id, b.id, b.title, b.actualPrice, ci.quantity ,b.bookThumbnail)
         from CartItem ci inner join ci.book b
         where ci.cart=:cart
         """)

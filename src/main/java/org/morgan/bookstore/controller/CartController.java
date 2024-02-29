@@ -2,7 +2,7 @@ package org.morgan.bookstore.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.morgan.bookstore.enums.Government;
-import org.morgan.bookstore.request.CartRequest;
+import org.morgan.bookstore.request.AddItemRequest;
 import org.morgan.bookstore.response.CartPriceResponse;
 import org.morgan.bookstore.response.CartResponse;
 import org.morgan.bookstore.service.CartService;
@@ -18,7 +18,7 @@ public class CartController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CartResponse addItem(@RequestBody CartRequest request) {
+    public CartResponse addItem(@RequestBody AddItemRequest request) {
         return cartService.addItem(request);
     }
 
