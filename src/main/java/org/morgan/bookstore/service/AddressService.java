@@ -101,7 +101,7 @@ public class AddressService extends OrderHandler {
 
         if(user.getAddresses().contains(shippingAddress)) {
             Address finalShippingAddress = shippingAddress;
-            shippingAddress = user.getAddresses().stream().filter(address -> address.equals(finalShippingAddress)).findFirst().get();
+            shippingAddress = user.getAddresses().stream().filter(address -> address.equals(finalShippingAddress)).findFirst().orElse(null);
         } else {
             shippingAddress.setUser(user);
             shippingAddress.setIsDefault(false);

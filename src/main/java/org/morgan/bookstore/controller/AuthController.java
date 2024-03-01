@@ -27,7 +27,6 @@ public class AuthController {
 
     @GetMapping("/verify")
     public String verifyAccount(@RequestParam(name = "token") String token) {
-        System.out.println(token);
         return authService.verifyAccount(token);
     }
 }

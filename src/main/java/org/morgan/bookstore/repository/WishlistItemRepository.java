@@ -2,7 +2,6 @@ package org.morgan.bookstore.repository;
 
 import jakarta.transaction.Transactional;
 import org.morgan.bookstore.model.Book;
-import org.morgan.bookstore.model.Cart;
 import org.morgan.bookstore.model.Wishlist;
 import org.morgan.bookstore.model.WishlistItem;
 import org.morgan.bookstore.response.ItemDTO;

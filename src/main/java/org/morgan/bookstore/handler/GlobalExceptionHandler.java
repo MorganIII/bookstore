@@ -1,4 +1,4 @@
-package org.morgan.bookstore.Handler;
+package org.morgan.bookstore.handler;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<?> handleEntityNotFoundException(EntityNotFoundException exp, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(EntityNotFoundException exp, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
                 .status(HttpStatus.NOT_FOUND.value())
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(EntityExistsException.class)
-    public ResponseEntity<?> handleEntityExistsException(EntityExistsException exp, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponse> handleEntityExistsException(EntityExistsException exp, HttpServletRequest request) {
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
                 .status(HttpStatus.CONFLICT.value())
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exp, HttpServletRequest request ) {
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exp, HttpServletRequest request ) {
         Set<String> errorMessages = exp.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toSet());
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException exp, HttpServletRequest request ) {
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exp, HttpServletRequest request ) {
         Set<String> errorMessages = exp.getConstraintViolations().stream()
                 .map(ConstraintViolation::getMessage).collect(Collectors.toSet());
 
@@ -92,7 +92,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ImageNotValidException.class)
-    public ResponseEntity<?> handleInvalidImageExtensionException(ImageNotValidException exp, HttpServletRequest request ) {
+    public ResponseEntity<ErrorResponse> handleInvalidImageExtensionException(ImageNotValidException exp, HttpServletRequest request ) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CouponException.class)
-    public ResponseEntity<?> handleCouponException(CouponException exp, HttpServletRequest request ) {
+    public ResponseEntity<ErrorResponse> handleCouponException(CouponException exp, HttpServletRequest request ) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())

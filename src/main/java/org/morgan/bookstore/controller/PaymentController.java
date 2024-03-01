@@ -21,13 +21,13 @@ public class PaymentController {
 
     private OrderService orderService;
 
-    @RequestMapping(value = "/webhook", method = RequestMethod.POST)
+    @PostMapping(value = "/webhook")
     public ResponseEntity<String> webhook(@RequestBody String payload, @RequestHeader("Stripe-Signature") String sigHeader) {
         Event event;
         try {
             event = Webhook.constructEvent(payload, sigHeader, webhookSecret);
         } catch (SignatureVerificationException e) {
-            System.out.println("Failed signature verification");
+            log.error("Failed signature verification");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 

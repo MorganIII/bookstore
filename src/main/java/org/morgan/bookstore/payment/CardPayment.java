@@ -31,7 +31,7 @@ public class CardPayment implements Pay {
                     .paymentMethod(PaymentMethod.CARD)
                     .build();
         } catch (StripeException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error occurred while processing payment");
         }
     }
 

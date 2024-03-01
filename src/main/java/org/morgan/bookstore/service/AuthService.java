@@ -2,16 +2,13 @@ package org.morgan.bookstore.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.morgan.bookstore.enums.CartStatus;
 import org.morgan.bookstore.enums.Role;
 import org.morgan.bookstore.exception.UserException;
-import org.morgan.bookstore.model.Cart;
 import org.morgan.bookstore.repository.AuthoritiesRepository;
 import org.morgan.bookstore.repository.CartRepository;
 import org.morgan.bookstore.request.LoginRequest;
 import org.morgan.bookstore.response.LoginResponse;
 import org.morgan.bookstore.request.RegisterRequest;
-import org.morgan.bookstore.model.Authorities;
 import org.morgan.bookstore.model.User;
 import org.morgan.bookstore.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +16,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,15 +57,15 @@ public class AuthService {
                         request.getPassword()
                 )
         );
-        Optional<User> regUser = repository.findUserByEmail(request.getEmail());
-        String jwtToken = jwtService.generateToken(regUser.get());
+        User regUser = repository.findUserByEmail(request.getEmail()).orElse(null);
+        String jwtToken = jwtService.generateToken(regUser);
         return new LoginResponse(jwtToken);
     }
 
     public String verifyAccount(String token) {
         User user =  repository.findUserByToken(token).
                 orElseThrow(()-> new UserException(String.format("token %s not valid", token)));
-        if(user.getIsEnabled()) {
+        if(Boolean.TRUE.equals(user.getIsEnabled())) {
             return "you are already verified your account";
         }
         user.setIsEnabled(true);

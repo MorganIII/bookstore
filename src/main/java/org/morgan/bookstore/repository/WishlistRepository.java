@@ -3,7 +3,6 @@ package org.morgan.bookstore.repository;
 import org.morgan.bookstore.model.Wishlist;
 import org.morgan.bookstore.response.WishlistListing;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 

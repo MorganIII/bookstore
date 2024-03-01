@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/section")
+@RequestMapping("/api/sections")
 @RequiredArgsConstructor
 public class SectionController {
 

@@ -2,8 +2,6 @@ package org.morgan.bookstore.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.morgan.bookstore.enums.Privacy;
 
 import java.util.HashSet;

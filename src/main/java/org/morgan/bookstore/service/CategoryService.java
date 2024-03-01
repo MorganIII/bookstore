@@ -54,7 +54,7 @@ public class CategoryService {
 
     public void deleteCategory(String categoryName) {
         Category category = getCategory(categoryName);
-        categoryRepository.deleteById(categoryName);
+        categoryRepository.deleteById(category.getName());
         log.info("A category with name {} has been deleted", categoryName);
     }
 

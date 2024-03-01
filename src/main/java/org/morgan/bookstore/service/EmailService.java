@@ -2,6 +2,7 @@ package org.morgan.bookstore.service;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -12,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -44,8 +46,7 @@ public class EmailService {
             helper.setText(text, true);
             emailSender.send(message);
         } catch (Exception exception) {
-            System.out.println(exception.getMessage());
-            throw new RuntimeException(exception.getMessage());
+            log.error(exception.getMessage());
         }
     }
 

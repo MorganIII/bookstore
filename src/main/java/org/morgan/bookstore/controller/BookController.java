@@ -25,7 +25,7 @@ public class BookController {
     private final BookService bookService;
 
     private final MultipartFileService multipartFileService;
-    @PostMapping(value = "",consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @ResponseStatus(HttpStatus.CREATED)
     public String addBook(@RequestPart("book")BookRequest request,
                           @RequestPart("cover")MultipartFile bookCover,
@@ -65,7 +65,6 @@ public class BookController {
                                                                   @RequestParam(value = "page")@PositiveOrZero Integer pageNumber,
                                                                   @RequestParam(value = "size")@Positive() Integer pageSize,
                                                                   @RequestParam(value = "orderby",required = false) String sortBy) {
-        System.out.println("sectionName = " + sectionName + ", categoryName = " + categoryName + ", pageNumber = " + pageNumber + ", pageSize = " + pageSize + ", sortBy = " + sortBy);
         return bookService.getBooksBySectionAndCategory(sectionName, categoryName, pageNumber, pageSize, sortBy);
     }
 

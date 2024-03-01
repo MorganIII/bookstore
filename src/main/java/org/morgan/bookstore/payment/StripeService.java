@@ -37,7 +37,7 @@ public class StripeService {
         RefundCreateParams params =
                 RefundCreateParams.builder().setPaymentIntent(paymentIntentId).build();
         try {
-            Refund refund = Refund.create(params);
+            Refund.create(params);
         } catch (StripeException e) {
             throw new RuntimeException(e);
         }

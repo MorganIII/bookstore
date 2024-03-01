@@ -2,8 +2,6 @@ package org.morgan.bookstore.service;
 
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.morgan.bookstore.enums.ChangeType;
 import org.morgan.bookstore.response.BookDetailsResponse;

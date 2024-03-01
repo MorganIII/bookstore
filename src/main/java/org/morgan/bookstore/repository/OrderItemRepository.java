@@ -1,6 +1,5 @@
 package org.morgan.bookstore.repository;
 
-import org.morgan.bookstore.model.Cart;
 import org.morgan.bookstore.model.Order;
 import org.morgan.bookstore.model.OrderItem;
 import org.morgan.bookstore.response.ItemDTO;

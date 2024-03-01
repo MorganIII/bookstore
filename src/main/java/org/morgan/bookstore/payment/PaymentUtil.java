@@ -4,6 +4,7 @@ import org.morgan.bookstore.enums.PaymentMethod;
 
 public abstract class PaymentUtil {
 
+
     public static Pay createPayment(PaymentMethod paymentMethod) {
         return switch (paymentMethod) {
             case CARD -> new CardPayment(new StripeService());

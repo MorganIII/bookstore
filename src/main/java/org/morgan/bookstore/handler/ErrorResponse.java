@@ -1,4 +1,4 @@
-package org.morgan.bookstore.Handler;
+package org.morgan.bookstore.handler;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
