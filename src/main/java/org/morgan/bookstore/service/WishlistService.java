@@ -26,7 +26,6 @@ public class WishlistService {
     private final UserService userService;
     private final BookService bookService;
     private final WishlistItemRepository wishlistItemRepository;
-    private final CartService cartService;
     public WishlistResponse createWishlist(CreateWishlistRequest createWishlistRequest) {
         checkIfWishlistExists(createWishlistRequest.getName(), userService.userId());
         Wishlist wishlist = Wishlist.builder()

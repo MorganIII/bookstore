@@ -13,7 +13,7 @@ import org.morgan.bookstore.model.Category;
 import org.morgan.bookstore.model.Section;
 import org.morgan.bookstore.enums.ImageType;
 import org.morgan.bookstore.enums.SortBy;
-import org.morgan.bookstore.exception.ImageNotValidException;
+import org.morgan.bookstore.exception.ImageException;
 import org.morgan.bookstore.repository.BookRepository;
 import org.morgan.bookstore.response.ItemDTO;
 import org.springframework.data.domain.Page;
@@ -44,7 +44,7 @@ public class BookService {
         Section section = sectionService.getSection(sectionName);
         Category category = categoryService.getCategoryByNameAndSectionName(categoryName,sectionName);
         if(bookCover.isEmpty() || bookThumbnail.isEmpty()) {
-            throw new ImageNotValidException("book cover image and book thumbnail image should not be null");
+            throw new ImageException("book cover image and book thumbnail image should not be null");
         }
         String bookCoverName = multipartFileService.uploadImage(bookCover, ImageType.COVER);
         String bookThumbnailName = multipartFileService.uploadImage(bookThumbnail, ImageType.THUMBNAIL);

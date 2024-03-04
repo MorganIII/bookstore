@@ -1,9 +1,10 @@
 package org.morgan.bookstore.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import jakarta.persistence.EntityNotFoundException;
 import org.morgan.bookstore.enums.ImageType;
-import org.morgan.bookstore.exception.ImageNotValidException;
+import org.morgan.bookstore.exception.ImageException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,7 +23,8 @@ import java.util.UUID;
 @Service
 public class MultipartFileService {
 
-    private static final String FULL_PATH = "D:/My Projects/BookStore/backend/web/images/";
+    @Value("${images.path}")
+    private String fullPath;
 
     public String uploadImage(MultipartFile file, ImageType type) {
         validate(file);
@@ -32,19 +34,19 @@ public class MultipartFileService {
             case THUMBNAIL -> "thumbnail/"+imageName;
         };
 
-        Path path = Paths.get(FULL_PATH+imagePath);
+        Path path = Paths.get(fullPath +imagePath);
 
         try (InputStream inputStream = file.getInputStream()){
             Files.copy(inputStream,path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ImageException(String.format("Failed to upload image name: %s", imageName ));
         }
 
         return imagePath;
     }
 
     public byte[] downloadImage(String imagePath) {
-        String path = FULL_PATH+imagePath;
+        String path = fullPath +imagePath;
         try {
             return Files.readAllBytes(new File(path).toPath());
         } catch (IOException e) {
@@ -61,7 +63,7 @@ public class MultipartFileService {
         };
     }
     public void deleteImage(String imagePath) {
-        Path path = Paths.get(FULL_PATH+imagePath);
+        Path path = Paths.get(fullPath +imagePath);
         try {
             Files.delete(path);
         } catch (IOException e) {
@@ -73,14 +75,14 @@ public class MultipartFileService {
 
     private static void validate(MultipartFile file) {
         if (file == null) {
-            throw new ImageNotValidException("No image file was uploaded.");
+            throw new ImageException("No image file was uploaded.");
         }
 
         String contentType = file.getContentType();
         String[] allowedExtensions = {"image/jpeg", "image/jpg", "image/png"};
 
         if (!Arrays.asList(allowedExtensions).contains(contentType)) {
-            throw new ImageNotValidException(
+            throw new ImageException(
                     String.format("Invalid image format. Only %s formats are allowed.", String.join(", ", allowedExtensions)));
         }
 

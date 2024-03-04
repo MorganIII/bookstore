@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.morgan.bookstore.enums.*;
+import org.morgan.bookstore.exception.OrderException;
 import org.morgan.bookstore.model.Order;
 import org.morgan.bookstore.model.Payment;
 import org.morgan.bookstore.order.OrderHandler;
@@ -34,8 +35,8 @@ public class OrderService extends OrderHandler {
     private final ModelMapper modelMapper;
     private final StripeService stripeService;
     @Transactional
-    public void paymentSucceeded(String PaymentIntentId) {
-        Payment payment = paymentService.getPaymentByIntentId(PaymentIntentId);
+    public void paymentSucceeded(String paymentIntentId) {
+        Payment payment = paymentService.getPaymentByIntentId(paymentIntentId);
         Order order = getOrderByPayment(payment);
         order.setOrderStatus(OrderStatus.PURCHASED);
         payment.setPaymentStatus(PaymentStatus.SUCCESSFUL);
@@ -43,8 +44,8 @@ public class OrderService extends OrderHandler {
     }
 
     @Transactional
-    public void paymentFailed(String PaymentIntentId) {
-        Payment payment = paymentService.getPaymentByIntentId(PaymentIntentId);
+    public void paymentFailed(String paymentIntentId) {
+        Payment payment = paymentService.getPaymentByIntentId(paymentIntentId);
         Order order = getOrderByPayment(payment);
         order.setOrderStatus(OrderStatus.FAILED);
         payment.setPaymentStatus(PaymentStatus.FAILED);
@@ -61,7 +62,7 @@ public class OrderService extends OrderHandler {
                 findOrderByIdAndUser(orderId, userId).
                 orElseThrow(()-> new EntityNotFoundException("Order not found"));
         if(order.getOrderStatus() != OrderStatus.PURCHASED && order.getOrderStatus() != OrderStatus.PENDING){
-            throw new IllegalStateException(
+            throw new OrderException(
                     String.format("You can't cancel the order after it has been %s", order.getOrderStatus())
             );
         }

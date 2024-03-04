@@ -1,9 +1,9 @@
 package org.morgan.bookstore.service;
 
 
+import jakarta.persistence.EntityExistsException;
 import lombok.RequiredArgsConstructor;
 import org.morgan.bookstore.enums.Role;
-import org.morgan.bookstore.exception.UserException;
 import org.morgan.bookstore.repository.AuthoritiesRepository;
 import org.morgan.bookstore.repository.CartRepository;
 import org.morgan.bookstore.request.LoginRequest;
@@ -12,6 +12,7 @@ import org.morgan.bookstore.request.RegisterRequest;
 import org.morgan.bookstore.model.User;
 import org.morgan.bookstore.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class AuthService {
     private final CartRepository cartRepository;
     public String register(RegisterRequest request) {
         if(isUserExist(request.getEmail())) {
-            return "You are already registered";
+            throw new EntityExistsException(String.format("user with email %s already exist", request.getEmail()));
         }
         String token = UUID.randomUUID().toString();
         var user = User.builder()
@@ -64,7 +65,7 @@ public class AuthService {
 
     public String verifyAccount(String token) {
         User user =  repository.findUserByToken(token).
-                orElseThrow(()-> new UserException(String.format("token %s not valid", token)));
+                orElseThrow(()-> new BadCredentialsException(String.format("token %s not valid", token)));
         if(Boolean.TRUE.equals(user.getIsEnabled())) {
             return "you are already verified your account";
         }

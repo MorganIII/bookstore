@@ -7,10 +7,12 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.morgan.bookstore.exception.CouponException;
-import org.morgan.bookstore.exception.ImageNotValidException;
+import org.morgan.bookstore.exception.ImageException;
+import org.morgan.bookstore.exception.OrderException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -91,8 +93,8 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(ImageNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidImageExtensionException(ImageNotValidException exp, HttpServletRequest request ) {
+    @ExceptionHandler(ImageException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidImageExtensionException(ImageException exp, HttpServletRequest request ) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
@@ -108,6 +110,37 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CouponException.class)
     public ResponseEntity<ErrorResponse> handleCouponException(CouponException exp, HttpServletRequest request ) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .dateTime(LocalDateTime.now())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .path(request.getServletPath())
+                .message(exp.getMessage())
+                .build();
+        log.error(exp.getMessage(), exp);
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exp, HttpServletRequest request ) {
+
+        ErrorResponse error = ErrorResponse.builder()
+                .dateTime(LocalDateTime.now())
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .path(request.getServletPath())
+                .message(exp.getMessage())
+                .build();
+        log.error(exp.getMessage(), exp);
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(error);
+    }
+
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<ErrorResponse> handleOrderException(OrderException exp, HttpServletRequest request ) {
 
         ErrorResponse error = ErrorResponse.builder()
                 .dateTime(LocalDateTime.now())
