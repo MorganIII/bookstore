@@ -136,7 +136,7 @@ print("Data inserted successfully!")
 6. The application will be running on [http://localhost:8080](http://localhost:8080) to view all the endpoints and test them, go to [swagger docs](http://localhost:8080/swagger-ui.html)
 
 ## Stripe
-In order to use the payment gateway, you need to create an account on [Stripe](https://stripe.com/) and get the public and secret keys and the webhook secret key  
+In order to use the payment gateway, you need to create an account on [Stripe](https://stripe.com/) and get the public and secret keys and the webhook secret key 
 from [stripe dashboard](https://dashboard.stripe.com/test/apikeys) and add them to the application-dev.yml file described in the installation section. The integration
 used with stripe is the [custom flow](https://docs.stripe.com/payments/accept-a-payment?platform=web&ui=elements) with [Collect payment details before creating an Intent scenario](https://docs.stripe.com/payments/accept-a-payment-deferred)
 . In order to test the payment gateway, you can use the test card numbers provided by stripe [here](https://docs.stripe.com/testing#cards).
